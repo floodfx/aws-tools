@@ -54,28 +54,26 @@ if [ -z "$EC2_CERT" ]; then
   echo "WARNING: EC2_CERT must be set before running ec2-* commands" >&2
 fi
 
+# developer credential set up...
+CRED_FILE=~/.aws_credentials
 
-# check credentials setup
-if [ -f $AWS_CREDENTIAL_FILE ]; then
+if [ -f $CRED_FILE ]; then
   # make sure credentials are current
   TF=`mktemp cred.XXX`
   echo "AWSAccessKeyId=${AWS_ACCESS_KEY_ID}" > $TF
   echo "AWSSecretKey=${AWS_SECRET_ACCESS_KEY}" >> $TF
 
-  cmp --quiet $AWS_CREDENTIAL_FILE $TF
+  cmp --quiet $CRED_FILE $TF
   
-  # warn and replace if different
+  # overwrite if different and warn
   if [ $? -ne 0 ]; then
     echo "WARNING: AWS_CREDENTIAL_FILE did not contain the currently set AWS_ACCESS_KEY_ID and/or AWS_SECRET_ACCESS_KEY. Updating $AWS_CREDENTIAL_FILE with currently set keys." >&2
-    cp $TF $AWS_CREDENTIAL_FILE
+    cp $TF $CRED_FILE
   fi
   rm -f $TF
 else
-  # create credentials file using AWS account  
-  AWS_CREDENTIAL_FILE=~/.aws_credentials
-  echo "AWSAccessKeyId=${AWS_ACCESS_KEY_ID}" > $AWS_CREDENTIAL_FILE
-  echo "AWSSecretKey=${AWS_SECRET_ACCESS_KEY}" >> $AWS_CREDENTIAL_FILE
-  echo "WARNING: AWS_CREDENTIAL_FILE was not set.  Created one at $AWS_CREDENTIAL_FILE" >&2
+  echo "AWSAccessKeyId=${AWS_ACCESS_KEY_ID}" > $CRED_FILE
+  echo "AWSSecretKey=${AWS_SECRET_ACCESS_KEY}" >> $CRED_FILE
 fi
 
-export AWS_CREDENTIAL_FILE=$AWS_CREDENTIAL_FILE
+export AWS_CREDENTIAL_FILE=$CRED_FILE
