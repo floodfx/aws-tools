@@ -75,7 +75,7 @@ else
   AWS_CREDENTIAL_FILE=~/.aws_credentials
   echo "AWSAccessKeyId=${AWS_ACCESS_KEY_ID}" > $AWS_CREDENTIAL_FILE
   echo "AWSSecretKey=${AWS_SECRET_ACCESS_KEY}" >> $AWS_CREDENTIAL_FILE
-  echo "WARNING: AWS_CREDENTIAL_FILE did not set.  Created one at $AWS_CREDENTIAL_FILE" >&2
+  echo "WARNING: AWS_CREDENTIAL_FILE was not set.  Created one at $AWS_CREDENTIAL_FILE" >&2
 fi
 
 export AWS_CREDENTIAL_FILE=$AWS_CREDENTIAL_FILE
