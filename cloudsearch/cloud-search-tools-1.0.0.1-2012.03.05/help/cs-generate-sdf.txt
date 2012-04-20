@@ -1,0 +1,191 @@
+NAME
+cs-generate-sdf - Experimental tool for analyzing the data you want to index
+                  and automatically generating SDF batches for indexing. 
+  
+SYNOPSIS
+  cs-generate-sdf --source PATH|S3_URI --output PATH|S3_URI
+                  [--modified-after yyyy-mm-ddTnn:nn]
+                  [--exclude-metadata] [--exclude-content] 
+                  [--single-doc-per-csv] [--sdf-format json|xml]
+                  [--docid-prefix STRING] [--doc-version NUM]
+                  [--batch-size MB] [--batch-docs NUM]
+                  COMMON_OPTIONS
+
+DESCRIPTION
+
+Analyze your data and generate SDF (Search Data Format) batches that can be
+submitted to Amazon CloudSearch for indexing using the cs-post-sdf
+command. The generated SDF batches can be saved to your local file system 
+or to an S3 bucket.
+
+The cs-generate-sdf command can generate SDF batches from the following 
+content types:
+
+   text/csv
+   text/html
+   text/plain
+   application/json
+   application/msword
+   application/pdf
+   application/vnd.ms-excel
+   application/vnd.ms-powerpoint
+   application/vnd.openxmlformats-officedocument.presentationml.presentation
+   application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+   application/vnd.openxmlformats-officedocument.wordprocessingml.document
+   application/xhtml+xml
+   application/xml
+
+Generally, a single add document request is added to the SDF batch for each
+source file. Where possible, the contents of the source file are parsed
+into one or more index fields. If metadata is available for the file, 
+an index field is added for each piece of metadata.
+
+When creating SDF batches from CSV source files, they are automatically 
+parsed to generate a separate document for each row in the CSV file. The 
+contents of the first row are used to define the document fields. If 
+you are processing multiple files, CSV files are parsed row-by-row, 
+and non-CSV files are treated as individual documents.
+
+You can specify the --single-doc-per-csv option to override the default
+behavior and treat each CSV file as a single document. Specifying 
+the --single-doc-per-csv option has no effect on non-CSV files. 
+
+Note: Currently, only CSV files are parsed to automatically extract 
+custom field data and generate multiple documents. When processing 
+XML and JSON files, each file is treated as a separate document and 
+the contents of the file are used to populate a single text field.
+
+COMMON OPTIONS
+
+-a, --access-key STRING         Your AWS access key. Used in conjunction
+                                with --secret-key. Must be specified if
+                                you do not use an AWS credential file.                 
+ 
+-c, --aws-credential-file FILE  The path to the file that contains your AWS
+                                credentials. Must be specified if you have
+                                not set the AWS_CREDENTIAL_FILE environment
+                                variable or explicitly set your credentials
+                                with --access-key and --secret-key.
+ 
+-d, --domain-name STRING        The name of the domain that you are updating.
+                                Required.
+ 
+-e,  --endpoint URL             The endpoint for the Amazon Cloud Search
+                                Configuration Service. Defaults to
+                                cloudsearch.us-east-1.amazonaws.com.
+ 
+-h, --help                      Display this help message.
+  
+-k, --secret-key STRING         Your AWS secret key. Used in conjunction with
+                                --access-key. Must be specified if you do not
+                                use an AWS credential file.
+ 
+-ve, --verbose                  Display verbose log messages.
+ 
+-v, --version                   Display the version number of the command
+                                line tools.
+ 
+REQUIRED SDF OPTIONS
+ 
+-o, --output PATH|S3_URI        The local directory or S3 bucket where you
+                                want to save the generated SDF batches.
+                                You must either specify an output location
+                                with the --output option, or specify the 
+                                --domain option to upload the generated
+                                SDF batches to a search domain.
+
+-s, --source PATH|S3_URI        The local directory, file, or S3 bucket
+                                that contains the data that you want
+                                to create SDF batches from. You can
+                                process data from multiple locations 
+                                by specifying multiple --source options.
+                                Accepts Apache-ant style wildcards such 
+                                as */** for files and S3 prefixes.
+                                Required.
+ 
+ADVANCED SDF OPTIONS
+
+-bd, --batch-docs NUM           The maximum number of documents in a batch.
+
+-bs, --batch-size MB            The maximum batch size in MB. Defaults to 5MB.
+
+-sdpc, --single-doc-per-csv     Treat the CSV file as a single document.
+                                If this option is specified, the contents of
+                                the CSV file will be treated as a single text
+                                field. This option has no effect on non-CSV
+                                files.
+ 
+-dp, --docid-prefix STRING      The prefix to prepend to the document ID 
+                                while processing CSV data. If not specified,
+                                the filename is used as the --docid-prefix.
+                                The docid column is used as the document ID
+                                if it is included in the CSV data; otherwise,
+                                the row number is used as the document ID.
+
+-dv, --doc-version NUM          The version number to use for all of the
+                                generated SDF documents. Defaults to 1.
+
+-ec, --exclude-content          Do not include the content of the source
+                                files in the generated SDF documents, only
+                                process the metadata.
+
+-em, --exclude-metadata         Do not include the metadata of the source
+                                files in the generated SDF documents, only
+                                process the content.
+
+-format, --sdf-format json|xml  The format of the generated SDF docments:
+                                json or xml. Defaults to json.
+
+-m, --modified-after TIMESTAMP  Only process files or S3 objects modified
+                                after the specified date and time. Specified
+                                as yyyy-mm-ddTnn:nn.
+
+EXAMPLES
+
+Generate an SDF batch from a plain text file:
+
+  cs-generate-sdf --source c:\myAmazingDataSet\data1.txt
+                  --output c:\myAmazingDataSet\SDF\batch
+                  COMMON_OPTIONS
+
+Generate a single document for each CSV file:
+
+  cs-generate-sdf --source c:\myAmazingDataSet\*.csv -sdpc
+                  --output c:\myAmazingDataSet\SDF\batch 
+                  COMMON_OPTIONS
+          
+Generate an SDF batch from multiple documents:
+
+  cs-generate-sdf --source c:\myAmazingDataSet\data1.xml
+                  --source c:\myAmazingDataSet\data2.xml
+                  --source c:\myAmazingDataSet\data3.xml
+                  --output c:\myAmazingDataSet\SDF\batch 
+                  COMMON_OPTIONS
+
+Generate SDF batches from all HTML documents in a directory:
+
+  cs-generate-sdf --source c:\myAmazingDataSet\*.html
+                  --output c:\myAmazingDataSet\SDF\batch 
+                  COMMON_OPTIONS
+                
+Generate SDF batches from all Word or PDF documents in a directory:
+
+  cs-generate-sdf --source c:\myAmazingDataSet\*.doc
+                  --source c:\myAmazingDataSet\*.pdf
+                  --output c:\myAmazingDataSet\SDF\batch
+                  COMMON_OPTIONS
+                
+Generate SDF batches from all recognized file types:
+
+  cs-generate-sdf --source c:\myAmazingDataSet\*
+                  --output c:\myAmazingDataSet\SDF\batch
+                  COMMON_OPTIONS
+                
+Generate SDF batches and upload them to your domain:
+                
+  cs-generate-sdf -d mydomain --source c:\myAmazingDataSet\*
+                  COMMON_OPTIONS
+
+SEE ALSO
+
+cs-post-sdf

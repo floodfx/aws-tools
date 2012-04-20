@@ -1,0 +1,158 @@
+NAME
+
+cs-configure-access-policies - Configure access to an Amazon CloudSearch
+                               domain.
+  
+SYNOPSIS 
+
+cs-configure-access-policies --service doc|search|all
+                             [--allow IP|CIDR|all] [--deny IP|CIDR|all]
+                             [--update] [--policy-file FILE]
+                             [--delete IP|CIDR] [--force]
+                             [--retrieve]                    
+                             COMMON_OPTIONS
+
+DESCRIPTION
+
+Defines access policies for a domain's document and search endpoints.
+When a domain is first created, it is configured to deny all access.
+To access the document or search services through the Amazon CloudSearch
+Command Line Tools or APIs, you must authorize one or more IP
+addresses.
+
+This command provides two ways for you to update your domain's access 
+policies:
+  
+  --update      Add or remove specific permissions from your domain's access
+                policies. Changes are automatically merged with the domain's 
+                existing policy document.
+
+  --policy-file Upload a policy document to your domain. The uploaded file
+                overwrites the domain's existing policy document.
+
+When using the --update option, you can specify multiple --allow or --deny
+options to allow or block multiple IP addresses or address ranges. You must
+specify one or more --service options to indicate which service endpoints
+you want to apply the access policies to.
+
+Address ranges are specified using Classless Inter-Domain Routing (CIDR)
+notation with the base IP address followed by a / and a network mask that 
+indicates the number of leftmost bits used to identify the network. If you 
+don't specify a network mask it defaults to 32, which authorizes or blocks 
+only the specified IP address.
+
+When using the --policy-file option, the uploaded policy document replaces
+the domain's existing policy document. The specified file must be a valid
+AWS Identity and Access Management (IAM) policy document. (You can use the
+--retrieve mode to get the domain's current policy document.) For
+information about the IAM Access Policy Language, see
+http://docs.amazonwebservices.com/IAM/latest/UserGuide/index.html?
+AccessPolicyLanguage.html.
+
+COMMON OPTIONS
+
+-a, --access-key STRING         Your AWS access key. Used in conjunction
+                                with --secret-key. Must be specified if
+                                you do not use an AWS credential file.
+                               
+-c, --aws-credential-file FILE  The path to the file that contains your AWS
+                                credentials. Must be specified if you have 
+                                not set the AWS_CREDENTIAL_FILE environment
+                                variable or explicitly set your credentials
+                                with --access-key and --secret-key.
+ 
+-d, --domain-name STRING        The name of the domain that you are querying
+                                or configuring. Required.
+ 
+-e,  --endpoint URL             The endpoint for the Amazon Cloud Search
+                                Configuration Service. Defaults to
+                                cloudsearch.us-east-1.amazonaws.com.
+ 
+-h, --help                      Display this help message.
+  
+-k, --secret-key STRING         Your AWS secret key. Used in conjunction with
+                                --access-key. Must be specified if you do not
+                                use an AWS credential file.
+ 
+-ve, --verbose                  Display verbose log messages.
+ 
+-v, --version                   Display the version number of the command
+                                line tools.
+                                
+UPDATE ACCESS POLICY OPTIONS
+
+-al, --allow IP|CIDR            Add access privileges for a specific IP
+                                address or CIDR block. Specify all to
+                                allow access from any IP address. Multiple
+                                --allow options can be specified to authorize
+                                multiple addresses or address ranges. Used
+                                in conjunction with the --update option.
+
+-del,--delete IP|CIDR           Delete the allow or deny rule configured for
+                                the specified IP address or CIDR block. Used
+                                in conjunction with the --update option.
+
+-de, --deny IP|CIDR             Deny access privileges for a specific IP
+                                address or CIDR block. Specify all to block
+                                access from all IP addresses. Multiple --deny
+                                options can be specified to block multiple
+                                addresses or address ranges. Used in
+                                conjunction with the --update option.
+
+-se, --service SERVICE          Specify the service to apply the policy
+                                changes to: doc, search, or all. All allow,
+                                deny, and delete options will be applied
+                                to the specified service. Multiple
+                                --service options can be specified to apply
+                                the same policies to multiple services.
+                                Required when using the --update option.
+                                
+-u, --update                    Update the policy with the specified allow,
+                                deny and delete options. When using --update,
+                                you must also specify at least one --allow, 
+                                --deny, or --delete option. You must also 
+                                specify at least one of the domain's
+                                endpoints with the --service option.                                
+
+POLICY FILE OPTIONS
+
+-pf, --policy-file FILE         Replace the domain's existing policy document
+                                with the specified JSON policy document. Can
+                                be specified as a path to a local file or an
+                                S3 URI.
+
+-r, --retrieve                  Retrieve the domain's existing policy document.
+ 
+MISCELLANEOUS OPTIONS
+
+-f,  --force                    Apply changes to the domain's access policies
+                                without confirmation. Can be used in
+                                conjunction with either the --update or
+                                --policy-file option.
+                                  
+EXAMPLES
+
+Authorize addresses in the range 192.168.0.0 to 192.168.3.255 to access all
+services:
+  
+  cs-configure-access-policies -d mydomain --update --allow 192.168.0.0/22  
+                               --service all
+                               COMMON_OPTIONS
+    
+Block a particular IP address from accessing the search service:
+  
+  cs-configure-access-policies -d mydomain --update --deny 192.168.0.0 
+                               --service search
+                               COMMON_OPTIONS
+
+Allow access to all services from any IP address:
+
+  cs-configure-access-policies -d mydomain --update --allow all --service all
+                               COMMON_OPTIONS
+    
+Upload a policy document and overwrite the domain's access policies without
+having to confirm the change:
+
+  cs-configure-access-policies -d mydomain --policy-file c:\mypolicydoc.json
+                               --force
+                               COMMON_OPTIONS

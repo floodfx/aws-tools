@@ -1,0 +1,21 @@
+# "allow-all" is an override over rest of the set configurations. It enables all 
+# content-types. Uncomment the following line to enable all content-types:
+#
+#allow-all
+
+# common text formats
+text/plain
+text/html
+application/xhtml+xml
+application/json
+application/xml
+text/csv
+
+# common document formats
+application/pdf
+application/msword
+application/vnd.openxmlformats-officedocument.wordprocessingml.document
+application/vnd.ms-excel
+application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+application/vnd.ms-powerpoint
+application/vnd.openxmlformats-officedocument.presentationml.presentation

@@ -1,0 +1,2 @@
+Amazon CloudSearch - Command Line Tools
+Copyright 2011-2012 Amazon.com, Inc. or its affiliates. All Rights Reserved.

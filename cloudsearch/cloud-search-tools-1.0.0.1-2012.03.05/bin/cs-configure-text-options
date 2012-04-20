@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+if [ -z "${CS_HOME}" ]; then
+    echo
+    echo " *ERROR* CS_HOME is not set, please set it to the directory that contains the cloud search tools."
+    echo "export CS_HOME=<your install dir>"
+    echo
+    exit 1
+fi
+if [ ! -f "${CS_HOME}/bin/cs-cmd" ]; then
+    echo
+    echo " *ERROR* CS_HOME is set to "\"$CS_HOME\"", should be set to a valid cloud search tool path. Looking for cs-cmd, but didn't find it there." 
+    echo
+    exit 1
+fi
+"${CS_HOME}"/bin/cs-cmd CSConfigureTextOptions "$@"
