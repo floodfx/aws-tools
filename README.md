@@ -26,6 +26,9 @@ Note: Our goal is not to be the repository for fixing bugs found in the already 
     # export AWS environment variables
     export AWS_ACCESS_KEY_ID="YOUR ACCESS KEY ID"
     export AWS_SECRET_ACCESS_KEY="YOUR SECRET ACCESS KEY"
+    # required for ec2-* tools
+    export EC2_PRIVATE_KEY=/PATH/TO/YOUR/PK
+    export EC2_CERT=/PATH/TO/YOUR/CERT
   
     # 
     export AWS_TOOLS_HOME=/PATH/TO/AWS_TOOLS/CLONE
