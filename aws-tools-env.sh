@@ -21,7 +21,7 @@ export AWS_ELASTICACHE_HOME=$dir/elasticcache/AmazonElastiCacheCli-1.6.000
 export AWS_ELB_HOME=$dir/elb/ElasticLoadBalancing-1.0.15.1
 export AWS_EMR_HOME=$dir/emr/elastic-mapreduce-ruby-20120730
 export AWS_IAM_HOME=$dir/iam/IAMCli-1.5.0
-export AWS_RDS_HOME=$dir/rds/RDSCli-1.6.001
+export AWS_RDS_HOME=$dir/rds/RDSCli-1.8.002
 export AWS_SNS_HOME=$dir/sns/SimpleNotificationServiceCli-1.0.3.0
 
 # add executables to the PATH
