@@ -12,7 +12,7 @@ fi
 # define homes of all CLI tools
 export AWS_TOOLS_HOME=$dir
 export EC2_AMITOOL_HOME=$dir/ami-tools/ec2-ami-tools-1.4.0.7
-export AWS_AUTO_SCALING_HOME=$dir/autoscaling/AutoScaling-1.0.49.1
+export AWS_AUTO_SCALING_HOME=$dir/autoscaling/AutoScaling-1.0.61.0
 export AWS_CLOUDFORMATION_HOME=$dir/cloudformation/AWSCloudFormation-1.0.9
 export CS_HOME=$dir/cloudsearch/cloud-search-tools-1.0.0.1-2012.03.05
 export AWS_CLOUDWATCH_HOME=$dir/cw/CloudWatch-1.0.12.1
