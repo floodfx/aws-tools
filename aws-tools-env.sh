@@ -67,7 +67,7 @@ if [ -f $CRED_FILE ]; then
   
   # overwrite if different and warn
   if [ $? -ne 0 ]; then
-    echo "WARNING: AWS_CREDENTIAL_FILE did not contain the currently set AWS_ACCESS_KEY_ID and/or AWS_SECRET_ACCESS_KEY. Updating $AWS_CREDENTIAL_FILE with currently set keys." >&2
+    echo "WARNING: AWS_CREDENTIAL_FILE did not contain the currently set AWS_ACCESS_KEY_ID and/or AWS_SECRET_ACCESS_KEY. Updating $CRED_FILE with currently set keys." >&2
     cp $TF $CRED_FILE
   fi
   rm -f $TF
@@ -77,3 +77,32 @@ else
 fi
 
 export AWS_CREDENTIAL_FILE=$CRED_FILE
+
+# same thing but for the elastic-mapreduce client
+EMR_CRED_FILE=~/.aws_credentials.json
+
+if [ -f $EMR_CRED_FILE ]; then
+  # make sure credentials are current
+  TF=`mktemp cred.XXX`
+  echo "{" > $TF
+  echo "  \"access-id\": \"${AWS_ACCESS_KEY_ID}\"," >> $TF
+  echo "  \"private-key\": \"${AWS_SECRET_ACCESS_KEY}\"" >> $TF
+  echo "}" >> $TF
+
+  cmp --quiet $EMR_CRED_FILE $TF
+  
+  # overwrite if different and warn
+  if [ $? -ne 0 ]; then
+    echo "WARNING: ELASTIC_MAPREDUCE_CREDENTIALS did not contain the currently set AWS_ACCESS_KEY_ID and/or AWS_SECRET_ACCESS_KEY. Updating $EMR_CRED_FILE with currently set keys." >&2
+    cp $TF $EMR_CRED_FILE
+  fi
+  rm -f $TF
+else
+  echo "{" > $EMR_CRED_FILE
+  echo "  \"access-id\": \"${AWS_ACCESS_KEY_ID}\"," >> $EMR_CRED_FILE
+  echo "  \"private-key\": \"${AWS_SECRET_ACCESS_KEY}\"" >> $EMR_CRED_FILE
+  echo "}" >> $EMR_CRED_FILE
+fi
+
+export ELASTIC_MAPREDUCE_CREDENTIALS=$EMR_CRED_FILE
+
