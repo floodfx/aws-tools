@@ -78,6 +78,11 @@ fi
 
 export AWS_CREDENTIAL_FILE=$CRED_FILE
 
+# aws-java-sdk uses a different env name for their secret key in the default credential provider
+# https://github.com/aws/aws-sdk-java/issues/50
+export AWS_SECRET_KEY=${AWS_SECRET_ACCESS_KEY}
+
+
 # same thing but for the elastic-mapreduce client
 EMR_CRED_FILE=~/.aws_credentials.json
 
