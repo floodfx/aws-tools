@@ -42,3 +42,8 @@ We will try to keep this as up-to-date as possible but will happily accept pull 
 ## known issues
  * Looks like the cloudsearch credentials file has a different format than the other tools that use credentials file.  This wouldn't be a big deal except for the fact that cloudsearch uses the same name for the environment variable.
 
+## License
+
+Licensed under the terms of the Apache Software License v2.0. 
+
+http://www.apache.org/licenses/LICENSE-2.0.html
